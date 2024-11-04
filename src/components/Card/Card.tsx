@@ -6,9 +6,10 @@ interface Props {
     kcal: string;
     id: string;
     del: (id: string) => void;
+    edit: (id: string) => void;
 }
 
-const Card: React.FC<Props> = ({type, description, kcal, id, del}) => {
+const Card: React.FC<Props> = ({type, description, kcal, id, del, edit}) => {
     return (
         <div className="card mb-2">
             <div className="row align-items-center p-3">
@@ -18,7 +19,7 @@ const Card: React.FC<Props> = ({type, description, kcal, id, del}) => {
                 </div>
                 <b className="col-2">{kcal} Kcal</b>
                 <div className="col-2 d-flex flex-column gap-2">
-                    <button className="border-0 bg-transparent">
+                    <button onClick={() => edit(id)} className="border-0 bg-transparent">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                              className="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path
