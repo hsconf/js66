@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useCallback, useEffect, useState} from "react";
 import axiosApi from "../../axiosApi.ts";
 import {iMeal, Meals} from "../../types.ts";
@@ -7,6 +7,7 @@ import Card from "../../components/Card/Card.tsx";
 const Home = () => {
 
     const [meals, setMeals] = useState<Meals[]>([]);
+    const navigate = useNavigate();
 
     const request = useCallback(async () => {
         const { data: res } = await axiosApi.get<iMeal | null>('meals.json');
@@ -15,7 +16,6 @@ const Home = () => {
                 ...res[m],
                 id: m
             }));
-            console.log(data);
             setMeals(data);
         }
     }, []);
@@ -25,18 +25,17 @@ const Home = () => {
     const del = useCallback(async (id: string) => {
         if (id) {
             await axiosApi.delete(`meals/${id}.json`);
+            setMeals((prevMeals) => prevMeals.filter(meal => meal.id !== id));
         }
     }, []);
 
-    // const edit = useCallback(async (id: string) => {
-    //
-    // }, []);
+    const edit = (id: string) => {
+        navigate(`meals/${id}/edit`);
+    };
 
     useEffect(() => {
         void request();
-    }, [request, del]);
-
-    console.log(meals);
+    }, [request]);
 
     return (
         <div>
@@ -47,7 +46,7 @@ const Home = () => {
 
             <div className="mt-5">
                 {meals.reverse().map((meal) => (
-                    <Card type={meal.type} description={meal.description} kcal={meal.kcal} key={meal.id} id={meal.id} del={del} />
+                    <Card type={meal.type} description={meal.description} kcal={meal.kcal} key={meal.id} id={meal.id} del={del} edit={edit} />
                 ))}
             </div>
 
